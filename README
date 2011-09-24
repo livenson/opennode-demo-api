@@ -1,0 +1,29 @@
+A demonstrator of Opennode API.
+
+Setup
+-----
+0. git clone git://github.com/livenson/opennode-demo-api.git
+1a. pip install -r requirements.txt
+1b. easy_install web.py
+2. ./on-demo.sh
+
+Testing
+-------
+<base> ::== localhost:8080
+
+Lists
+=====
+* curl <base>/computes
+* curl <base>/networks
+* curl <base>/storages
+* curl <base>/templates
+* curl <base>/news
+
+Elements
+========
+* curl <base>/computes/<NR>
+* curl <base>/networks/<NR>
+* curl <base>/storages/<NR>
+* curl <base>/templates/<NR>
+* curl <base>/news/<NR>
+

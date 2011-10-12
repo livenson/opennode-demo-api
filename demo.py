@@ -20,7 +20,6 @@ urls = (
 app = web.application(urls, globals())
 
 def gen_compute_data(id):
-    id = int(id)
     return {'id': id,
             'hostname': 'hostname %s' %id, 
             'arch': ['x86', 'x64', 'win32', 'win64', 'macosx'][id % 5], 
@@ -31,7 +30,6 @@ def gen_compute_data(id):
             'state': ['running', 'stopped', 'suspended'][id % 3]}
 
 def gen_network_data(id):
-    id = int(id)
     return {'id': id,
             'name': 'network %s' %id, 
             'ip': '%s.%s.%s.%s' %(id, id, id, id),
@@ -41,7 +39,6 @@ def gen_network_data(id):
            }
 
 def gen_storage_data(id):
-    id = int(id)
     return {'id': id,
             'name': 'network %s' %id, 
             'size': id * 3000,
@@ -49,7 +46,6 @@ def gen_storage_data(id):
             }
 
 def gen_template_data(id):
-    id = int(id)
     return {'id': id,
             'name': 'network %s' %id, 
             'min_disk_size': id * 3000,
@@ -57,7 +53,6 @@ def gen_template_data(id):
             }
 
 def gen_news_data(id):
-    id = int(id)
     def get_string(length):
         return ''.join(random.choice(string.letters) for i in xrange(length))
     return {'id': id,
@@ -66,51 +61,58 @@ def gen_news_data(id):
             'content': get_string(400)
             }
 
+limit = 20
+
+computes = [gen_compute_data(i) for i in range(limit)]
+storages = [gen_storage_data(i) for i in range(limit)]
+networks = [gen_network_data(i) for i in range(limit)]
+templates = [gen_network_data(i) for i in range(limit)]
+news = [gen_network_data(i) for i in range(limit)]
 
 class ComputeList(object):
     def GET(self):
-        limit = 20
-        return json.dumps([{x: gen_compute_data(x)['hostname']} for x in range(limit)])
+        return json.dumps([c['hostname'] for c in computes])
 
 class Compute(object):
     def GET(self, id):
-        return json.dumps(gen_compute_data(id), sort_keys = 4, indent = 4)
+        id = int(id)
+        return json.dumps(computes[id], sort_keys = 4, indent = 4)
 
 class NetworkList(object):
     def GET(self):
-        limit = 20
-        return json.dumps([{x: gen_network_data(x)['name']} for x in range(limit)])
+        return json.dumps([n['name'] for n in networks])
 
 class Network(object):
     def GET(self, id):
-        return json.dumps(gen_network_data(id), sort_keys = 4, indent = 4)
+        id = int(id)
+        return json.dumps(networks(id), sort_keys = 4, indent = 4)
 
 class StorageList(object):
     def GET(self):
-        limit = 20
-        return json.dumps([{x: gen_storage_data(x)['name']} for x in range(limit)])
+        return json.dumps([s['name'] for s in storages])
 
 class Storage(object):
     def GET(self, id):
-        return json.dumps(gen_storage_data(id), sort_keys = 4, indent = 4)
+        id = int(id)
+        return json.dumps(storages(id), sort_keys = 4, indent = 4)
 
 class TemplateList(object):
     def GET(self):
-        limit = 20
-        return json.dumps([{x: gen_template_data(x)['name']} for x in range(limit)])
+        return json.dumps([t['name'] for t in templates])
 
 class Template(object):
     def GET(self, id):
-        return json.dumps(gen_template_data(id), sort_keys = 4, indent = 4)
+        id = int(id)
+        return json.dumps(templates(id), sort_keys = 4, indent = 4)
 
 class NewsList(object):
     def GET(self):
-        limit = 20
-        return json.dumps([{x: gen_news_data(x)['title']} for x in range(limit)])
+        return json.dumps([n['title'] for n in news])
 
 class News(object):
     def GET(self, id):
-        return json.dumps(gen_news_data(id), sort_keys = 4, indent = 4)
+        id = int(id)
+        return json.dumps(news(id), sort_keys = 4, indent = 4)
 
 
 if __name__ == "__main__":

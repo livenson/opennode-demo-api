@@ -11,19 +11,18 @@ Testing
 -------
 <base> ::== localhost:8080
 
-Lists
-=====
-* curl <base>/computes
-* curl <base>/networks
-* curl <base>/storages
-* curl <base>/templates
-* curl <base>/news
+'GET /container/' or 'GET /container/id' for information retrieval
+'POST /container/'  for creating
+'PUT /container/id' for updating
+'DELETE /container/id' for deleting
 
-Elements
-========
-* curl <base>/computes/<NR>
-* curl <base>/networks/<NR>
-* curl <base>/storages/<NR>
-* curl <base>/templates/<NR>
-* curl <base>/news/<NR>
+Parameters are encoded in JSON and passed in HTTP body.
+
+Containers
+==========
+* <base>/computes/
+* <base>/networks/
+* <base>/storages/
+* <base>/templates/
+* <base>/news/
 

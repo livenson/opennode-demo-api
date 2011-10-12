@@ -5,7 +5,7 @@ Setup
 0. git clone git://github.com/livenson/opennode-demo-api.git
 1a. pip install -r requirements.txt
 1b. easy_install web.py
-2. ./on-demo.sh
+2. ./demo.py
 
 Testing
 -------

@@ -7,15 +7,15 @@ import random
 
 urls = (
     '/computes/', 'ComputeList',
-    '/computes/(\d+)', 'Compute',
+    '/computes/(\d+)/', 'Compute',
     '/networks/', 'NetworkList',
-    '/networks/(\d+)', 'Network',
+    '/networks/(\d+)/', 'Network',
     '/storages/', 'StorageList',
-    '/storages/(\d+)', 'Storage',
+    '/storages/(\d+)/', 'Storage',
     '/templates/', 'TemplateList',
-    '/templates/(\d+)', 'Template',
+    '/templates/(\d+)/', 'Template',
     '/news/', 'NewsList',
-    '/news/(\d+)', 'News'
+    '/news/(\d+)/', 'News'
 )
 app = web.application(urls, globals())
 

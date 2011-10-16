@@ -141,8 +141,12 @@ class GenericResource(object):
     def GET(self, id):
         id = int(id)
         cls = self.__class__.__name__
-        type = self.resource[cls]
-        return json.dumps(type[id], sort_keys = 4, indent = 4)
+        resource_type = self.resource[cls]
+        # locate object
+        for obj in resource_type:
+            if obj['id'] == id:
+                return json.dumps(resource_type[id], sort_keys = 4, indent = 4)
+        raise web.notfound()
 
 
 class ComputeList(GenericContainer): pass

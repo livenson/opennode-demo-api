@@ -47,7 +47,7 @@ def gen_storage_data(id):
 
 def gen_template_data(id):
     return {'id': id,
-            'name': 'network %s' %id, 
+            'name': ['centos5', 'centos6', 'rhel6-jbos', 'winserver2008', 'jetty-cluster'][id % 5], 
             'min_disk_size': id * 3000,
             'min_memory_size': id * 300
             }
@@ -66,8 +66,8 @@ limit = 20
 computes = [gen_compute_data(i) for i in range(limit)]
 storages = [gen_storage_data(i) for i in range(limit)]
 networks = [gen_network_data(i) for i in range(limit)]
-templates = [gen_network_data(i) for i in range(limit)]
-news = [gen_network_data(i) for i in range(limit)]
+templates = [gen_template_data(i) for i in range(limit)]
+news = [gen_news_data(i) for i in range(limit)]
 
 
 

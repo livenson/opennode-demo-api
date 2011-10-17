@@ -40,7 +40,7 @@ def gen_network_data(id):
 
 def gen_storage_data(id):
     return {'id': id,
-            'name': 'network %s' %id, 
+            'name': 'storage_pool %s' %id, 
             'size': id * 3000,
             'type': ['local', 'iscsi', 'lvm', 'nfs'][id % 4]
             }

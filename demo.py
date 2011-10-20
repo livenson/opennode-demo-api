@@ -69,8 +69,6 @@ networks = [gen_network_data(i) for i in range(limit)]
 templates = [gen_template_data(i) for i in range(limit)]
 news = [gen_news_data(i) for i in range(limit)]
 
-
-
 class GenericContainer(object):
 
     resource = {'ComputeList': computes,
@@ -80,7 +78,15 @@ class GenericContainer(object):
                 'NewsList': news
                 }
 
+    def OPTIONS(self):
+        web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
+        web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
+        web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
     def GET(self):
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
         # deduce resource type from the object name
         cls = self.__class__.__name__
         type = self.resource[cls]
@@ -88,6 +94,9 @@ class GenericContainer(object):
         return json.dumps([{t['id']: t['name']} for t in type])
 
     def POST(self):
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
         # deduce resource type from the object name
         cls = self.__class__.__name__
         type = self.resource[cls]
@@ -108,7 +117,15 @@ class GenericResource(object):
                 'News': news
                 }
 
+    def OPTIONS(self, id):
+        web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
+        web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
+        web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
     def PUT(self, id):
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
         id = int(id)
         # deduce resource type from the object name
         cls = self.__class__.__name__
@@ -125,6 +142,8 @@ class GenericResource(object):
         raise web.notfound()
 
     def DELETE(self, id):
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
         id = int(id)
         # deduce resource type from the object name
         cls = self.__class__.__name__
@@ -139,6 +158,8 @@ class GenericResource(object):
         raise web.notfound()
 
     def GET(self, id):
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
         id = int(id)
         cls = self.__class__.__name__
         resource_type = self.resource[cls]

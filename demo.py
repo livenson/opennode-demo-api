@@ -4,6 +4,7 @@ import web
 import json
 import string
 import random
+import datetime
 
 urls = (
     '/', 'AllResourcesList', 
@@ -16,8 +17,9 @@ urls = (
     '/templates/', 'TemplateList',
     '/templates/(\d+)/', 'Template',
     '/news/', 'NewsList',
-    '/news/(\d+)/', 'News'
-)
+    '/news/(\d+)/', 'News',
+    '/news/(\d+)/comments/', 'CommentList'
+    )
 app = web.application(urls, globals())
 
 def gen_compute_data(id):
@@ -55,11 +57,13 @@ def gen_template_data(id):
 
 def gen_news_data(id):
     def get_string(length):
-        return 'News: ' + ''.join(random.choice(string.letters) for i in xrange(length))
+        return ''.join(random.choice(string.letters) for i in xrange(length))
     return {'id': id,
             'type': ['info', 'warning', 'error', 'system_message'][id % 4],
-            'name': get_string(20),
-            'content': get_string(400)
+            'name': 'Wow!: ' + get_string(20),
+            'content': get_string(400),
+            'comments': [{idc: (datetime.datetime.now().isoformat(), ['andres', 'ilja', 'erik', 'marko', 'sasha'][idc % 5], 
+                'I think that ' + get_string(10))} for idc in range(1,10)],
             }
 
 limit = 20
@@ -204,6 +208,29 @@ class News(GenericResource): pass
 
 class AllResourcesList(GenericContainer): pass
 
+class CommentList(object):
+    
+    def POST(self, newsid):
+        print newsid
+        if 'HTTP_ORIGIN' in web.ctx.environ:
+            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+
+        # load corresponding news
+        foundNews = None
+        for n in news:
+            if int(n['id']) == int(newsid):
+                foundNews = n
+                break
+
+        if foundNews is None:
+            raise web.notfound()
+
+        # append a new comment to the news
+        new_id = max(foundNews['comments']).keys()[0] + 1
+        submitted_data = json.loads(web.data())
+        foundNews['comments'].append({new_id: (datetime.datetime.now().isoformat(), 
+                            submitted_data['author'], submitted_data['content'])})
+        return json.dumps(foundNews, sort_keys = 4, indent = 4)
 
 if __name__ == "__main__":
     app.run()

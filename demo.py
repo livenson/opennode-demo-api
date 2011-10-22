@@ -6,6 +6,7 @@ import string
 import random
 
 urls = (
+    '/', 'AllResourcesList', 
     '/computes/', 'ComputeList',
     '/computes/(\d+)/', 'Compute',
     '/networks/', 'NetworkList',
@@ -21,7 +22,7 @@ app = web.application(urls, globals())
 
 def gen_compute_data(id):
     return {'id': id,
-            'name': 'hostname %s' %id, 
+            'name': 'hostname_%s' %id, 
             'arch': ['x86', 'x64', 'win32', 'win64', 'macosx'][id % 5], 
             'memory': 2*id,
             'cpu': 0.2 * id,
@@ -31,7 +32,7 @@ def gen_compute_data(id):
 
 def gen_network_data(id):
     return {'id': id,
-            'name': 'network %s' %id, 
+            'name': 'network_%s' %id, 
             'ip': '%s.%s.%s.%s' %(id, id, id, id),
             'mask': '%s.%s.%s.0' %(id * 2, id * 2, id * 2),
             'address_allocation': ['dhcp', 'static'][id % 2], 
@@ -40,7 +41,7 @@ def gen_network_data(id):
 
 def gen_storage_data(id):
     return {'id': id,
-            'name': 'storage_pool %s' %id, 
+            'name': 'storage_pool_%s' %id, 
             'size': id * 3000,
             'type': ['local', 'iscsi', 'lvm', 'nfs'][id % 4]
             }
@@ -54,7 +55,7 @@ def gen_template_data(id):
 
 def gen_news_data(id):
     def get_string(length):
-        return ''.join(random.choice(string.letters) for i in xrange(length))
+        return 'News: ' + ''.join(random.choice(string.letters) for i in xrange(length))
     return {'id': id,
             'type': ['info', 'warning', 'error', 'system_message'][id % 4],
             'name': get_string(20),
@@ -69,13 +70,16 @@ networks = [gen_network_data(i) for i in range(limit)]
 templates = [gen_template_data(i) for i in range(limit)]
 news = [gen_news_data(i) for i in range(limit)]
 
+allresources = computes + storages + networks + templates + news
+
 class GenericContainer(object):
 
     resource = {'ComputeList': computes,
                 'StorageList': storages,
                 'NetworkList': networks,
                 'TemplateList': templates,
-                'NewsList': news
+                'NewsList': news,
+                'AllResourcesList': allresources
                 }
 
     def OPTIONS(self):
@@ -86,12 +90,25 @@ class GenericContainer(object):
     def GET(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
-
+        
+        # extract search parameters
+        def filter(o):
+            """Evaluate whether object matches request query"""
+            q = web.ctx.query
+            if q.rfind('q=') == -1:
+                return True
+            else:
+                terms = q[q.index('q=') + 2:].decode('utf8').split('&')
+                # iterate over search terms, return True for the first hit
+                for t in terms:
+                    if o['name'].rfind(t) != -1:
+                        return True
+            return False
         # deduce resource type from the object name
         cls = self.__class__.__name__
         type = self.resource[cls]
 
-        return json.dumps([{t['id']: t['name']} for t in type])
+        return json.dumps([{t['id']: t['name']} for t in type if filter(t)])
 
     def POST(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
@@ -184,6 +201,8 @@ class Template(GenericResource): pass
 
 class NewsList(GenericContainer): pass
 class News(GenericResource): pass
+
+class AllResourcesList(GenericContainer): pass
 
 
 if __name__ == "__main__":

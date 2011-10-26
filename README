@@ -13,8 +13,8 @@ Testing
 
 'GET /container/' or 'GET /container/id' for information retrieval
 'POST /container/'  for creating
-'PUT /container/id' for updating
-'DELETE /container/id' for deleting
+'PUT /container/id/' for updating
+'DELETE /container/id/' for deleting
 
 Parameters are encoded in JSON and passed in HTTP body.
 
@@ -25,4 +25,5 @@ Containers
 * <base>/storages/
 * <base>/templates/
 * <base>/news/
+* <base>/news/comments/
 

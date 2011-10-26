@@ -89,11 +89,11 @@ class GenericContainer(object):
     def OPTIONS(self):
         web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
         web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
-        web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+        web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
     def GET(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
         
         # extract search parameters
         def filter(o):
@@ -116,7 +116,7 @@ class GenericContainer(object):
 
     def POST(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
         # deduce resource type from the object name
         cls = self.__class__.__name__
@@ -141,11 +141,11 @@ class GenericResource(object):
     def OPTIONS(self, id):
         web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
         web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
-        web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+        web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
     def PUT(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
         id = int(id)
         # deduce resource type from the object name
@@ -164,7 +164,7 @@ class GenericResource(object):
 
     def DELETE(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
         id = int(id)
         # deduce resource type from the object name
         cls = self.__class__.__name__
@@ -180,7 +180,7 @@ class GenericResource(object):
 
     def GET(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
         id = int(id)
         cls = self.__class__.__name__
         resource_type = self.resource[cls]
@@ -213,7 +213,7 @@ class CommentList(object):
     def POST(self, newsid):
         print newsid
         if 'HTTP_ORIGIN' in web.ctx.environ:
-            web.header('Access-Control-Allow-Origin', web.ctx.environ['HTTP_ORIGIN'])
+            web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
         # load corresponding news
         foundNews = None
@@ -234,3 +234,4 @@ class CommentList(object):
 
 if __name__ == "__main__":
     app.run()
+

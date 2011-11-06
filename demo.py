@@ -112,7 +112,7 @@ class GenericContainer(object):
         cls = self.__class__.__name__
         type = self.resource[cls]
 
-        return json.dumps([{t['id']: t['name']} for t in type if filter(t)])
+        return json.dumps([t for t in type if filter(t)], indent = 4)
 
     def POST(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:

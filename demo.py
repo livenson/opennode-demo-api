@@ -200,7 +200,7 @@ class GenericResource(object):
         # locate object
         for obj in resource_type:
             if obj['id'] == id:
-                return json.dumps(resource_type[id], sort_keys = 4, indent = 4)
+                return json.dumps(obj, sort_keys = 4, indent = 4)
         raise web.notfound()
 
 

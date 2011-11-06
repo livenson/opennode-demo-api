@@ -5,6 +5,8 @@ import json
 import string
 import random
 import datetime
+import basicauth
+
 
 urls = (
     '/', 'AllResourcesList', 
@@ -20,6 +22,7 @@ urls = (
     '/news/(\d+)/', 'News',
     '/news/(\d+)/comments/', 'CommentList'
     )
+
 app = web.application(urls, globals())
 
 def gen_compute_data(id):
@@ -76,6 +79,11 @@ news = [gen_news_data(i) for i in range(limit)]
 
 allresources = computes + storages + networks + templates + news
 
+def myVerifier(username, password, realm):
+    return username == "opennode" and password == "demo"
+
+auth = basicauth.auth(verify = myVerifier)
+
 class GenericContainer(object):
 
     resource = {'ComputeList': computes,
@@ -85,12 +93,14 @@ class GenericContainer(object):
                 'NewsList': news,
                 'AllResourcesList': allresources
                 }
-
+    
+    @auth
     def OPTIONS(self):
         web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
         web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
         web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
+    @auth
     def GET(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
@@ -114,6 +124,7 @@ class GenericContainer(object):
 
         return json.dumps([t for t in type if filter(t)], indent = 4)
 
+    @auth
     def POST(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
@@ -138,11 +149,13 @@ class GenericResource(object):
                 'News': news
                 }
 
+    @auth
     def OPTIONS(self, id):
         web.header('Access-Control-Allow-Method', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])
         web.header('Access-Control-Allow-Headers', web.ctx.environ['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])
         web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
 
+    @auth
     def PUT(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
@@ -162,6 +175,7 @@ class GenericResource(object):
         # nothing found
         raise web.notfound()
 
+    @auth
     def DELETE(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
@@ -178,6 +192,7 @@ class GenericResource(object):
         # nothing found
         raise web.notfound()
 
+    @auth
     def GET(self, id):
         if 'HTTP_ORIGIN' in web.ctx.environ:
             web.header('Access-Control-Allow-Origins', web.ctx.environ['HTTP_ORIGIN'])
@@ -210,6 +225,7 @@ class AllResourcesList(GenericContainer): pass
 
 class CommentList(object):
     
+    @auth
     def POST(self, newsid):
         print newsid
         if 'HTTP_ORIGIN' in web.ctx.environ:

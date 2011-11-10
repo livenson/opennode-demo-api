@@ -60,7 +60,7 @@ def gen_template_data(id):
 
 def gen_news_data(id):
     def get_string(length):
-        return ''.join(random.choice(string.letters) for i in xrange(length))
+        return ''.join("TEMPORARY FIX")
     return {'id': id,
             'type': ['info', 'warning', 'error', 'system_message'][id % 4],
             'name': 'Wow!: ' + get_string(20),
@@ -137,6 +137,7 @@ class GenericContainer(object):
         submitted_data = json.loads(web.data())
         submitted_data.update({'id': new_id})
         type.append(submitted_data)
+        allresources.append(submitted_data)
         return json.dumps(type[-1], sort_keys = 4, indent = 4)
 
 class GenericResource(object):
@@ -186,6 +187,7 @@ class GenericResource(object):
         for o in type:
             if o['id'] == id:
                 type.remove(o)
+                allresources.remove(o)
                 return
         # nothing found
         raise web.notfound()
@@ -248,4 +250,3 @@ class CommentList(object):
 
 if __name__ == "__main__":
     app.run()
-

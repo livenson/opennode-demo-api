@@ -45,22 +45,28 @@ def gen_network_data(id):
            }
 
 def gen_storage_data(id):
+    mult = random.randint(1, 3000)
     return {'id': id,
             'name': 'storage_pool_%s' %id, 
-            'size': id * 3000,
+            'capacity': id * 3000,
+            'available': id*mult,
             'type': ['local', 'iscsi', 'lvm', 'nfs'][id % 4]
             }
 
 def gen_template_data(id):
     return {'id': id,
-            'name': ['centos5', 'centos6', 'rhel6-jbos', 'winserver2008', 'jetty-cluster'][id % 5], 
+            'name': ['centos5', 'centos6', 'rhel6-jboss', 'winserver2008', 'jetty-cluster'][id % 5], 
             'min_disk_size': id * 3000,
-            'min_memory_size': id * 300
+            'min_memory_size': id * 300,
+            'min_cpu': 2,
+            'max_cpu': 4,
+            'max_disk_size': id * 2000000,
+            'max_memory_size': id * 200000,
             }
 
 def gen_news_data(id):
     def get_string(length):
-        return ''.join(random.choice(string.letters) for i in xrange(length))
+        return ''.join(random.choice(string.ascii_letters) for i in xrange(length))
     return {'id': id,
             'type': ['info', 'warning', 'error', 'system_message'][id % 4],
             'name': 'Wow!: ' + get_string(20),

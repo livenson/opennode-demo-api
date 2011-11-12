@@ -129,6 +129,15 @@ class GenericContainer(object):
 
         return json.dumps([t for t in type if filter(t)], indent = 4)
 
+    def _publish_news(self, item_type, item_text):
+        new_id = max([t['id'] for t in news]) + 1
+        news_item['id'] = new_id
+        news_item['name'] = "New object: %s" %item_type
+        news_item['type'] = 'info'
+        news_item['content'] = "%s: %s" % (datetime.datetime.now().isoformat(),text, item_text)
+        news.append(new_item)
+        allresources.append(news_item)
+
     @auth
     def POST(self):
         if 'HTTP_ORIGIN' in web.ctx.environ:
@@ -143,8 +152,11 @@ class GenericContainer(object):
         submitted_data = json.loads(web.data())
         submitted_data.update({'id': new_id})
         type.append(submitted_data)
+        allresources.append(submitted_data)
+#        self._publish_news(cls, 'Create a new object of type %s ith id %' % (type, new_id))
         return json.dumps(type[-1], sort_keys = 4, indent = 4)
 
+    
 class GenericResource(object):
     
     resource = {'Compute': computes,
@@ -192,6 +204,7 @@ class GenericResource(object):
         for o in type:
             if o['id'] == id:
                 type.remove(o)
+                allresources.remove(o)
                 return
         # nothing found
         raise web.notfound()
@@ -254,4 +267,3 @@ class CommentList(object):
 
 if __name__ == "__main__":
     app.run()
-
